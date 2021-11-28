@@ -1,0 +1,53 @@
+## Saldo Comercial da RP China com o Mundo e os EUA
+
+```{r, echo=F, eval=T, results='asis', fig.width=8, fig.height=4, fig.align='center', out.width="1\\linewidth", warning=FALSE, message=FALSE, size='small'}
+library(readxl)
+library(dplyr)
+library(tidyverse)
+library(ggplot2)
+trade1 <- read_excel("C:/Users/berrd/Desktop/China Data/Book11.xlsx", 
+    sheet = "trade") %>%
+    mutate(saldomundo = (expmillion-impmillion)/1000,
+           saldoUS = (ExpUS10000-ImpUS10000)/100000, 
+           saldoresto = (saldomundo-saldoUS),
+           saldomundoUS = (saldoUS/saldomundo)*100)
+trade2 <- filter(trade1, Indicators > '1997')
+
+ggplot(trade2, aes(x=Indicators, group = 1))+
+  geom_line(aes(y=saldomundo, colour='Total'), size=1)+
+  geom_line(aes(y=saldoUS, colour='com os EUA'), size=1)+
+  geom_line(aes(y=saldoresto, colour='Total (exc. EUA)'), size=1)+
+  geom_hline(yintercept=0, colour='black', linetype='solid')+
+  geom_vline(xintercept=2019, colour='black', linetype='dashed')+
+  scale_colour_manual('', values=c('Total'='darkgreen', 'Total (exc. EUA)'='red', 'com os EUA'='darkblue'))+
+  labs(x='', y='Valores em Bilhões',
+       title='Saldo Comercial Total, com os EUA e o Resto do Mundo',
+       caption='Fonte: https://data.worldbank.org/')
+```
+
+## Importância dos EUA no Superávit da Balança Comercial da RP China
+
+```{r, echo=F, eval=T, results='asis', fig.width=8, fig.height=4, fig.align='center', out.width="1\\linewidth", warning=FALSE, message=FALSE, size='small'}
+library(readxl)
+library(dplyr)
+library(tidyverse)
+library(ggplot2)
+trade1 <- read_excel("C:/Users/berrd/Desktop/China Data/Book11.xlsx", 
+    sheet = "trade") %>%
+    mutate(saldomundo = (expmillion-impmillion)/1000,
+           saldoUS = (ExpUS10000-ImpUS10000)/100000, 
+           saldoresto = (saldomundo-saldoUS),
+           saldomundoUS = (saldoUS/saldomundo)*100)
+trade2 <- filter(trade1, Indicators > '1997')
+
+ggplot(trade2, aes(x=Indicators, group = 1))+
+  geom_line(aes(y=saldomundoUS, colour='A Participação dos EUA no Superávit COmercial da RP China'), size=1)+
+  geom_hline(yintercept=0, colour='black', linetype='solid')+
+  geom_hline(yintercept=100, colour='black', linetype='dashed')+
+  geom_vline(xintercept=2019, colour='black', linetype='dashed')+
+  scale_colour_manual('', values=c('A Participação dos EUA no Superávit COmercial da RP China'='red'))+
+  theme(legend.position="bottom")+
+  labs(x='', y='Percentagem',
+       title='Razão Saldo Comercial com os EUA na Balança Comercial da RP China',
+       caption='Fonte: https://data.worldbank.org/')
+```

@@ -1,0 +1,44 @@
+---
+title: "Tendências da Evolução da Conta Externa da República Popular da China"
+author: "Ben Lian Deng, Doutorando em Economia e Cientista de Dados"
+output:   
+  pdf_document:
+    number_sections: true
+    toc: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+\newpage
+# **Evolução do PIB**
+```{r child = 'chinapib.Rmd'}
+```
+
+\newpage
+# **A Dinâmica do Balanço de Pagamentos**
+```{r child = 'chinaBP.Rmd'}
+```
+
+\newpage
+# **Investimentos Estrangeiros Diretos (Inflow e Outflow)**
+```{r child = 'chinainv.Rmd'}
+```
+
+\newpage
+# **Reservas Internacionais e Dívida Externa**
+```{r child = 'chinaresdiv.Rmd'}
+```
+
+\newpage
+# **Taxa de Câmbio e Inflação**
+```{r child = 'chinaexcinf.Rmd'}
+```
+
+\newpage
+# **Bônus: Depêndencia Comerical com os EUA**
+```{r child = 'chinausa.Rmd'}
+```
+
+

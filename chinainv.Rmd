@@ -1,0 +1,39 @@
+## Entrada e Saída de Investimentos Estrangeiros Diretos em Relação ao PIB
+
+```{r, echo=F, eval=T, results='asis', fig.width=8, fig.height=4, fig.align='center', out.width="1\\linewidth", warning=FALSE, message=FALSE, size='small'}
+library(readxl)
+library(dplyr)
+library(tidyverse)
+library(ggplot2)
+forinv <- read_excel("C:/Users/berrd/Desktop/China Data/Book11.xlsx", 
+    sheet = "forinv") 
+View(forinv)
+ggplot(forinv, aes(x=Ano, group = 1))+
+  geom_line(aes(y=inflowper, colour='Entrada'), size=1)+
+  geom_line(aes(y=outflowper, colour='Saída'), size=1)+
+  geom_hline(yintercept=0, colour='black', linetype='solid')+
+  scale_colour_manual('', values=c('Entrada'='darkblue', 'Saída'='red'))+
+  labs(x='', y='Porcentagem em Relação ao PIB',
+       title='Inflow e Outflow de Investimentos Estrangeiros Diretos (Percentual)',
+       caption='Fonte: https://data.worldbank.org/')
+```
+
+## Valor Nominal da Entrada e Saída de Investimentos
+```{r, echo=F, eval=T, results='asis', fig.width=8, fig.height=4, fig.align='center', out.width="1\\linewidth", warning=FALSE, message=FALSE, size='small'}
+library(readxl)
+library(dplyr)
+library(tidyverse)
+library(ggplot2)
+forinv <- read_excel("C:/Users/berrd/Desktop/China Data/Book11.xlsx", 
+    sheet = "forinv") %>%
+    mutate(inflowmenor = inflow/1000000000, outflowmenor = outflow/1000000000)
+View(forinv)
+ggplot(forinv, aes(x=Ano, group = 1))+
+  geom_line(aes(y=inflowmenor, colour='Entrada'), size=1)+
+  geom_line(aes(y=outflowmenor, colour='Saída'), size=1)+
+  geom_hline(yintercept=0, colour='black', linetype='solid')+
+  scale_colour_manual('', values=c('Entrada'='darkblue', 'Saída'='red'))+
+  labs(x='', y='Valores em Bilhões',
+       title='Inflow e Outflow de Investimentos Estrangeiros Diretos (Valores)',
+       caption='Fonte: https://data.worldbank.org/')
+```

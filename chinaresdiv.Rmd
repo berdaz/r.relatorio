@@ -1,0 +1,39 @@
+## Evolução das Reservas Internacionais e da Dívida Externa da RP China e do Brasil entre 1977 e 2020
+
+```{r, echo=F, eval=T, results='asis', fig.width=8, fig.height=4, fig.align='center', out.width="1\\linewidth", warning=FALSE, message=FALSE, size='small'}
+library(readxl)
+library(esquisse)
+library(tidyverse)
+library(ggplot2)
+reservasdivida <- read_excel("C:/Users/berrd/Desktop/China Data/Book11.xlsx", 
+    sheet = "reservas") %>%
+    mutate(reservasmenor = Amount/1000000000, debtmenor = extdebt/1000000000)
+View(reservasdivida)
+ggplot(reservasdivida, aes(x=Year))+
+  geom_line(aes(y=reservasmenor, colour='Reservas Internacionais'), size=.8)+
+  geom_line(aes(y=debtmenor, colour='Dívida Externa'), size=.8)+
+  scale_colour_manual('', values=c('Reservas Internacionais'='darkblue','Dívida Externa'='red'))+
+  labs(x='', y='Valores em Bilhões de Dólares Americanos',
+       title='Evolução das Reservas Internacionais e da Dívida Externa da RP China e do Brasil entre 1977 e 2020',
+       caption='Fonte: http://www.worldbank.org/') 
+```
+
+## Evolução das Reservas Internacionais e da Dívida Externa da RP China em Relação ao PIB entre 1977 e 2020
+
+```{r, echo=F, eval=T, results='asis', fig.width=8, fig.height=4, fig.align='center', out.width="1\\linewidth", warning=FALSE, message=FALSE, size='small'}
+library(readxl)
+library(dplyr)
+library(tidyverse)
+library(ggplot2)
+reservasdividaper <- read_excel("C:/Users/berrd/Desktop/China Data/Book11.xlsx",     sheet = "reservas") %>%
+    mutate(reservasmenor = Amount/1000000000, debtmenor = extdebt/1000000000, divres = (debtmenor/reservasmenor)*100) 
+    reservasdividaper1 <- filter(reservasdividaper, Year > '2000-01-01')
+View(reservasdividaper1)
+ggplot(reservasdividaper1, aes(x=Year))+
+  geom_line(aes(y=divres, colour='Dívida/Reservas'), size=.8)+
+  geom_line(aes(y=percdebtgni, colour='Dívida/PIB'), size=.8)+
+  scale_colour_manual('', values=c('Dívida/Reservas'='darkblue','Dívida/PIB'='red'))+
+  labs(x='', y='Percentual',
+       title='Relação Dívida Externa/Reservas Internacionais e Dívida Externa/PIB da RP China entre 1981 e 2020',
+       caption='Fonte: http://www.worldbank.org/') 
+```

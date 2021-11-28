@@ -1,0 +1,84 @@
+## Taxa de Crescimento do PIB da RP China
+
+```{r, echo=F, eval=T, results='asis', fig.width=8, fig.height=4, fig.align='center', out.width="1\\linewidth", warning=FALSE, message=FALSE, size='small'}
+library(readxl)
+library(tidyverse)
+library(ggplot2)
+Book11 <- read_excel("C:/Users/berrd/Desktop/China Data/Book11.xlsx", 
+    sheet = "GDP") %>%
+  mutate(GNIempor = GNI-100)
+View(Book11)
+ggplot(Book11, aes(Book11, x=Year, y=GNIempor, Group = 1))+
+  geom_line(colour= 'red', size=1)+
+  geom_hline(yintercept=0, colour='black', linetype='dashed')+
+  labs(x='Ano', y='Taxa de Crescimento do PIB (%)',
+       title='Taxa de Crescimento do PIB (1953-2020)',
+       caption='Fonte: http://www.stats.gov.cn/') 
+```
+
+## Evolução Nominal do PIB da RP China e do Brasil
+
+```{r, echo=F, eval=T, results='asis', fig.width=8, fig.height=4, fig.align='center', out.width="1\\linewidth", warning=FALSE, message=FALSE, size='small'}
+library(readxl)
+library(dplyr)
+library(tidyverse)
+library(ggplot2)
+Book11 <- read_excel("C:/Users/berrd/Desktop/China Data/Book11.xlsx", 
+    sheet = "GDP") %>%
+    mutate(ChinaPIBUSDmenor = ChinaPIBUSD/1000000000, BrazilPIBUSDmenor = BrazilPIBUSD/1000000000)
+    dados = filter(Book11, (Year > 01/01/1960))
+View(dados)
+ggplot(dados, aes(x=Year))+
+  geom_line(aes(y=ChinaPIBUSDmenor, colour='China'), size=.8)+
+  geom_line(aes(y=BrazilPIBUSDmenor, colour='Brasil'), size=.8)+
+  scale_colour_manual('', values=c('China'='red','Brasil'='darkblue'))+
+  labs(x='', y='PIB em Bilhões de Dólares Americanos',
+       title='Evolução Comparada do PIB Nominal (1960-2020)',
+       caption='Fonte: http://www.worldbank.org/') 
+```
+
+\newpage
+## Participação do Consumo, Investimento e Exportações para o Crescimento da RP China
+
+```{r, echo=F, eval=T, results='asis', fig.width=8, fig.height=4, fig.align='center', out.width="1\\linewidth", warning=FALSE, message=FALSE, size='small'}
+library(readxl)
+library(dplyr)
+library(tidyverse)
+library(tidyr)
+library(ggplot2)
+
+contcres <- read_excel("C:/Users/berrd/Desktop/China Data/Book11.xlsx", 
+    sheet = "ContG") 
+contcres1 <- contcres %>% select(Year, Conpoint, Invpoint, Exppoint)
+contcres2 <- contcres1 %>% pivot_longer(!Year, names_to = "contrcres", values_to = "amount")
+View(contcres2)
+
+ggplot(contcres2, aes(x=Year, y=amount, fill=contrcres)) + 
+  geom_col(aes(fill=contrcres)) +
+  labs(x='', y='Percentual', 
+       title='Contribuições para o Crescimento (1978-2020)',
+       caption='Fonte: http://www.stats.gov.cn/') 
+```
+
+## Participação Percentual do Consumo, Investimento e Exportações para o Crescimento da RP China 
+
+```{r, echo=F, eval=T, results='asis', fig.width=8, fig.height=4, fig.align='center', out.width="1\\linewidth", warning=FALSE, message=FALSE, size='small'}
+library(readxl)
+library(dplyr)
+library(tidyverse)
+library(tidyr)
+library(ggplot2)
+
+contcres <- read_excel("C:/Users/berrd/Desktop/China Data/Book11.xlsx", 
+    sheet = "ContG") 
+contcresper1 <- contcres %>% select(Year, 'Conper', 'Invper', 'Expper')
+contcresper2 <- contcresper1 %>% pivot_longer(!Year, names_to = "contrcresper", values_to = "amount")
+View(contcresper2)
+
+ggplot(contcresper2, aes(x=Year, y=amount, fill=contrcresper)) + 
+  geom_col() + 
+  geom_hline(yintercept=100, colour='black', linetype='dashed') +
+  labs(x='', y='Percentual', 
+       title='Contribuições Percentuais (1978-2020)',
+       caption='Fonte: http://www.stats.gov.cn/') 
+```

@@ -1,0 +1,211 @@
+## Saldo do Balanço de Pagamentos
+```{r, echo=F, eval=T, results='asis', fig.width=8, fig.height=4, fig.align='center', out.width="1\\linewidth", warning=FALSE, message=FALSE, size='small'}
+library(readxl)
+library(tidyverse)
+library(ggplot2)
+
+CC <- read_excel("C:/Users/berrd/Desktop/China Data/Book11.xlsx", 
+    sheet = "CC") %>%
+    mutate(saldocc = (saldocc10000/100000))
+View(CC)
+
+ggplot(CC, aes(x=Indicators, y=saldocc, Group=1))+
+  geom_line(colour= 'red', size=1)+
+  geom_hline(yintercept=0, colour='black', linetype='solid')+
+  geom_vline(xintercept=2019, colour='black', linetype='dashed')+
+  labs(x='Ano', y='Valores em Bilhões de Dólares',
+       title='Taxa de Crescimento do PIB da RP China (1982-2020)',
+       caption='Fonte: http://www.stats.gov.cn/') 
+```
+
+## Saldo do Balanço de Pagamentos em Relação ao PIB
+```{r, echo=F, eval=T, results='asis', fig.width=8, fig.height=4, fig.align='center', out.width="1\\linewidth", warning=FALSE, message=FALSE, size='small'}
+library(readxl)
+library(tidyverse)
+library(ggplot2)
+library(dplyr)
+
+CC <- read_excel("C:/Users/berrd/Desktop/China Data/Book11.xlsx", 
+    sheet = "CC") %>%
+    mutate(saldocc = (saldocc10000/100000))
+CCpPIB <- CC %>% select(Indicators, saldocc)
+Book11 <- read_excel("C:/Users/berrd/Desktop/China Data/Book11.xlsx", 
+    sheet = "GDP") %>%
+    mutate(ChinaPIBUSDmenor = ChinaPIBUSD/1000000000)
+PIBpCC1 <- Book11 %>% select(Year, ChinaPIBUSDmenor)
+PIBpcc = filter(PIBpCC1, (Year > 1981))
+CCPIB <- cbind(CCpPIB, PIBpcc)
+
+ggplot(CCPIB, aes(x=Indicators, y=(saldocc/ChinaPIBUSDmenor)*100, Group=1))+
+  geom_line(colour= 'red', size=1)+
+  geom_hline(yintercept=0, colour='black', linetype='solid')+
+  geom_vline(xintercept=2019, colour='black', linetype='dashed')+
+  labs(x='', y='Percentual',
+       title='Relação Saldo da Conta Corrente e PIB',
+       caption='Fonte: http://www.stats.gov.cn/') 
+```
+
+\newpage
+## Saldo da Conta de Transações Correntes (Bens, Serviços, Rendas e Lucros, e Transferências Correntes)
+```{r, echo=F, eval=T, results='asis', fig.width=8, fig.height=4, fig.align='center', out.width="1\\linewidth", warning=FALSE, message=FALSE, size='small'}
+library(readxl)
+library(tidyverse)
+library(ggplot2)
+library(dplyr)
+CC7 <- read_excel("C:/Users/berrd/Desktop/China Data/Book11.xlsx", 
+    sheet = "CC") %>%
+    mutate(bencc = ben10000/100000,
+           sercc = ser10000/100000, 
+           rentra = (IncomeProfit+CompensationStaffWorkers+ProfitfromInv)/100000,
+           cortra = (CurrentTransfers+GovernmentsCurrentTransfers+	OtherDepartmentsCurrentTransfers)/100000)
+CC8 <- CC7 %>% select(Indicators, 'bencc', 'sercc', 'rentra', 'cortra')
+
+ggplot(CC8, aes(x=Indicators))+
+  geom_line(aes(y=bencc, colour='Saldo de Bens'))+
+  geom_line(aes(y=sercc, colour='Saldo de Serviços'))+
+  geom_line(aes(y=rentra, colour='Rendas e Lucros'))+
+  geom_line(aes(y=cortra, colour='Transferências Correntes'))+
+  geom_hline(yintercept=0, colour='black', linetype='solid')+
+  geom_vline(xintercept=2019, colour='black', linetype='dashed')+
+  scale_colour_manual('', values=c('Saldo de Bens'='darkblue', 'Rendas e Lucros'='darkgreen', 'Saldo de Serviços'='red', 'Transferências Correntes'='orange'))+
+  labs(x='', y='Valores em Bilhões de Dólares Americanos',
+       title='Composição do Saldo do Balanço de Pagamentos',
+       caption='Fonte: http://www.stats.gov.cn/') 
+```
+
+### Saldo da Conta de Transações Correntes (Bens e Serviços)
+```{r eval=T, echo=F, fig.align='center', fig.height=4, fig.width=8, message=FALSE, warning=FALSE, out.width="1\\linewidth", results='asis', size='small'}
+library(readxl)
+library(tidyverse)
+library(ggplot2)
+library(dplyr)
+library(lubridate)
+
+CC2 <- read_excel("C:/Users/berrd/Desktop/China Data/Book11.xlsx", 
+    sheet = "CC") %>%
+    mutate(bensercc = benser10000/100000,
+           bencc = ben10000/100000,
+           sercc = ser10000/100000)
+CC3 <- CC2 %>% select(Indicators, 'bensercc', 'bencc', 'sercc')
+View(CC3)
+
+ggplot(CC3, aes(x=Indicators))+
+  geom_line(aes(y=bensercc, colour='Saldo da Conta Corrente'))+
+  geom_line(aes(y=bencc, colour='Saldo de Bens'))+
+  geom_line(aes(y=sercc, colour='Saldo de Serviços'))+
+  geom_hline(yintercept=0, colour='black', linetype='solid')+
+  geom_vline(xintercept=2019, colour='black', linetype='dashed')+
+  scale_colour_manual('', values=c('Saldo da Conta Corrente'='darkblue', 'Saldo de Bens'='darkgreen', 'Saldo de Serviços'='red'))+
+  labs(x='', y='Valores em Bilhões de Dólares Americanos',
+       title='Evolução do Saldo da Conta Corrente, Bens e Serviços',
+       caption='Fonte: http://www.stats.gov.cn/') 
+```
+
+\newpage
+### Saldo da Balança Comercial
+
+```{r, echo=F, eval=T, results='asis', fig.width=8, fig.height=4, fig.align='center', out.width="1\\linewidth", warning=FALSE, message=FALSE, size='small'}
+library(readxl)
+library(tidyverse)
+library(ggplot2)
+library(dplyr)
+trade <- read_excel("C:/Users/berrd/Desktop/China Data/Book11.xlsx", 
+    sheet = "trade") %>%
+    mutate(saldobi = saldomillion/1000,
+           expbi = expmillion/1000,
+           impbi= impmillion/1000)
+View(trade)
+
+ggplot(trade, aes(x=Indicators))+
+  geom_line(aes(y=saldobi, colour='Saldo da Balança Comercial'))+
+  geom_line(aes(y=expbi, colour='Exportações'))+
+  geom_line(aes(y=impbi, colour='Importações'))+
+  geom_hline(yintercept=0, colour='black', linetype='solid')+
+  geom_vline(xintercept=2019, colour='black', linetype='dashed')+
+  scale_colour_manual('', values=c('Saldo da Balança Comercial'='darkblue', 'Exportações'='darkgreen', 'Importações'='red'))+
+  labs(x='', y='Valores em Bilhões de Dólares Americanos',
+       title='Evolução do Saldo da Conta Corrente, Bens e Serviços',
+       caption='Fonte: http://www.stats.gov.cn/') 
+```
+
+
+## Composição do Deficit da Balança de Serviços
+```{r, echo=F, eval=T, results='asis', fig.width=12, fig.height=4, fig.align='center', out.width="1\\linewidth", warning=FALSE, message=FALSE, size='small'}
+library(readxl)
+library(dplyr)
+library(tidyverse)
+library(tidyr)
+library(ggplot2)
+
+CC4 <- read_excel("C:/Users/berrd/Desktop/China Data/Book11.xlsx", 
+    sheet = "CC") 
+CC5 <- CC4 %>% select(Indicators, 'Transportation(USD 10000)',	'Travel(USD 10000)',	'Communication Service(USD 10000)',	'Construction Service(USD 10000)',	'Insurance Service(USD 10000)',	'Financial Service(USD 10000)',	'Computer and Information Service(USD 10000)',	'Fees for Patent or Royalty(USD 10000)',	'Consultation(USD 10000)',	'Advertisement and Publicity(USD 10000)',	'Movies and Audio-video Products(USD 10000)',	'Other Commercial Service(USD 10000)',	'Government Service not Elsewhere Classified(USD 10000)')
+CC6 <- CC5 %>% pivot_longer(!Indicators, names_to = "Serviços", values_to = "amount")
+library(ggplot2)
+
+ggplot(CC6, aes(x=Indicators, y=amount, fill=Serviços)) + 
+  geom_col() + 
+  geom_hline(yintercept=0, colour='black', linetype='solid')+
+  geom_vline(xintercept=2019, colour='black', linetype='dashed')+
+  scale_fill_manual(values = c(`Advertisement and Publicity(USD 10000)` = "#F8766D", 
+`Communication Service(USD 10000)` = "#DF8824", `Computer and Information Service(USD 10000)` = "#BD9A00", 
+`Construction Service(USD 10000)` = "#93AA00", `Consultation(USD 10000)` = "#31B425", `Fees for Patent or Royalty(USD 10000)` = "#00BC5A", 
+`Financial Service(USD 10000)` = "#00C19F", `Government Service not Elsewhere Classified(USD 10000)` = "#00BBCC", 
+`Insurance Service(USD 10000)` = "#20AFEC", `Movies and Audio-video Products(USD 10000)` = "#619CFF", 
+`Other Commercial Service(USD 10000)` = "#B280FC", `Transportation(USD 10000)` = "#E66CE8", `Travel(USD 10000)` = "#FF009E"
+)) +
+  labs(x='', y='Percentual', 
+       title='Contribuições para o Crescimento da RP China',
+       caption='Fonte: http://www.stats.gov.cn/') 
+```
+
+\newpage
+## Saldo do Balanço de Pagamentos
+```{r, echo=F, eval=T, results='asis', fig.width=8, fig.height=4, fig.align='center', out.width="1\\linewidth", warning=FALSE, message=FALSE, size='small'}
+library(readxl)
+library(tidyverse)
+library(ggplot2)
+library(dplyr)
+CC <- read_excel("C:/Users/berrd/Desktop/China Data/Book11.xlsx", 
+    sheet = "CC") %>%
+    mutate(saldocc = (saldocc10000/100000))
+CKF <- read_excel("C:/Users/berrd/Desktop/China Data/Book11.xlsx", 
+    sheet = "CKF") %>%
+    mutate(KA = (CapitalAccountBalance/100000), FA = (FinancialAccountBalance/10000))
+EO <- read_excel("C:/Users/berrd/Desktop/China Data/Book11.xlsx", 
+    sheet = "EO") %>%
+    mutate(NEOB = (NetErrorandOmissionBalance/100000))
+BP <- cbind(CC, EO, CKF)
+
+ggplot(BP, aes(x=Indicators))+
+  geom_line(aes(y=saldocc, colour='Transações Correntes'))+
+  geom_line(aes(y=KA, colour='Conta Capital'))+
+  geom_line(aes(y=FA, colour='Conta Financeira'))+
+  geom_line(aes(y=NEOB, colour='Erros e Emissões'))+
+  geom_hline(yintercept=0, colour='black', linetype='solid')+
+  geom_vline(xintercept=2019, colour='black', linetype='dashed')+
+  scale_colour_manual('', values=c('Transações Correntes'='darkblue', 'Conta Capital'='darkgreen', 'Conta Financeira'='red', 'Erros e Emissões'='orange'))+
+  labs(x='', y='Valores em Bilhões de Dólares Americanos',
+       title='Saldo do Balanço de Pagamentos',
+       caption='Fonte: http://www.stats.gov.cn/') 
+```
+
+## Balanço de Reserva de Ativos
+```{r, echo=F, eval=T, results='asis', fig.width=8, fig.height=4, fig.align='center', out.width="1\\linewidth", warning=FALSE, message=FALSE, size='small'}
+library(readxl)
+library(tidyverse)
+library(ggplot2)
+
+RA <- read_excel("C:/Users/berrd/Desktop/China Data/Book11.xlsx", 
+    sheet = "RA") %>%
+    mutate(RAB = (ReserveAssetsBalance/100000))
+View(RA)
+
+ggplot(RA, aes(x=Indicators, y=RAB, Group=1))+
+  geom_line(colour= 'red', size=1)+
+  geom_hline(yintercept=0, colour='black', linetype='solid')+
+  geom_vline(xintercept=2019, colour='black', linetype='dashed')+
+  labs(x='Ano', y='Valores em Bilhões de Dólares',
+       title='Saldo de Reserva de Ativos',
+       caption='Fonte: http://www.stats.gov.cn/') 
+```
